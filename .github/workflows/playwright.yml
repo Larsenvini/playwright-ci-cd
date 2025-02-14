@@ -1,0 +1,34 @@
+name: Playwright Tests
+
+on: [push, pull_request] # Runs on every push & pull request
+
+jobs:
+  test:
+    runs-on: ubuntu-latest # Use the latest Ubuntu runner
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Ensure full repo checkout
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18 # Use Node.js 18
+
+      - name: Install dependencies
+        run: npm install # Install Playwright & dependencies
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps # Ensure browsers are installed
+
+      - name: Run Playwright tests
+        run: npx playwright test --output=playwright-results
+
+      - name: Upload Playwright Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/

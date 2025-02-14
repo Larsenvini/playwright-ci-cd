@@ -1,0 +1,31 @@
+name: Playwright Tests
+
+on: [push, pull_request] # Run on every push and pull request
+
+jobs:
+  test:
+    runs-on: ubuntu-latest # Run on Linux
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3 # Pull the latest code
+
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16 # Set Node.js version
+
+      - name: Install dependencies
+        run: npm install # Install Playwright and other dependencies
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps # Ensure browsers are installed
+
+      - name: Run Playwright tests
+        run: npx playwright test # Run all Playwright tests
+
+      - name: Upload Playwright test results
+        if: failure() # Upload reports if tests fail
+        uses: actions/upload-artifact@v3
+        with:
+          name: playwright-results
+          path: test-results/
